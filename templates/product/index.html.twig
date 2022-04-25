@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %} {% block title %}Nos produits{% endblock %}
+{%block body %}
+
+<div class="container col-8 my-4">
+  <h1 class="display-4 bg-dark text-white text-center rounded shadow-lg">
+    Nos articles
+  </h1>
+
+  <div class="row mt-3">
+    {% for p in product %}
+    <div
+      class="card-all card text-white bg-secondary mb-3 text-center col-md-3 col-sm-5 col-xs-10"
+      style="max-width: 20rem;"
+    >
+      <div class="card-header my-2">
+        <img class="img-fluid mx-auto d-block" src="{{ p.picture }}" alt="" />
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">{{ p.title }}</h4>
+        <p class="card-text">
+          {{ p.content }}
+        </p>
+        <small class="text-success">{{ p.price }} €</small>
+      </div>
+      <div class="row justify-content-end">
+        <small class="text-info text-center"
+          ><a href="#">{{ p.category.name }}</a></small
+        >
+      </div>
+      <div>
+        <a href="{{ path('app_show', { id: p.id }) }}" class="btn btn-light"
+          >Voir</a
+        >
+        <a href="#" class="btn btn-success">Ajouter</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
