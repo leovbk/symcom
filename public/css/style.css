@@ -1,0 +1,16 @@
+html, body {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.card {
+  margin: auto;
+  /* height: 550px; */
+}
+
+.card-all {
+  height: 550px;
+}
+
+.btn {
+  width: 40%;
+}
