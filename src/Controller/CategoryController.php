@@ -17,4 +17,24 @@ class CategoryController extends AbstractController
         return $this->render('category/index.html.twig', [
         ]);
     }
+
+    /**
+     * @Route("/category/{id}", name="app_product_category", requirements={"id" : "\d+"}, methods={"GET", "POST"})
+     */
+    public function category($id, CategoryRepository $categoryRepo): Response 
+    {
+            //on pourrait aussi utiliser find($id)
+
+        $category = $categoryRepo->findOneBy(['id' => $id]);
+
+        if(!$category)
+        {
+            throw new NotFoundHttpException("La catégorie $id n'éxiste pas");
+        }
+
+        return $this->render("category/category_product.html.twig", [
+            'id' => $id,
+            'category' => $category           
+        ]);
+    }
 }

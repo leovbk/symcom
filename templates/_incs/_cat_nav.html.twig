@@ -2,7 +2,7 @@
   <a
     class="nav-link dropdown-toggle"
     data-bs-toggle="dropdown"
-    href="#"
+    href="{{ path('app_category') }}"
     role="button"
     aria-haspopup="true"
     aria-expanded="false"
@@ -10,7 +10,11 @@
   >
   <div class="dropdown-menu">
     {% for c in categories.findAll()%}
-    <a class="dropdown-item" href="#">{{ c.name | upper }}</a>
+    <a
+      class="dropdown-item"
+      href="{{ path('app_product_category', { id: c.id }) }}"
+      >{{ c.name | upper }}</a
+    >
 
     {% endfor %}
   </div>
