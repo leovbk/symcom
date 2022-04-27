@@ -22,9 +22,6 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_product') }}">Nos produits</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">A propos</a>
-        </li>
         {% include "_incs/_cat_nav.html.twig" %}
       </ul>
       <form class="d-flex">
@@ -33,6 +30,37 @@
           Search
         </button>
       </form>
+      <nav class="navbar">
+        <ul class="navbar-nav navbar-right">
+          {% if not app.user %}
+          <li class="nav-item">
+            <a href="{{ path('app_login') }}" class="nav-link"
+              ><i class="fa-solid fa-arrow-right-to-bracket"></i
+              ><small class="text-muted"> Connection</small></a
+            >
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a href="{{ path('app_logout') }}" class="nav-link"
+              ><i class="fa-solid fa-power-off text-danger"></i
+            ></a>
+          </li>
+          {% if is_granted('ROLE_USER') %}
+          <li class="nav-item">
+            <a href="#" class="nav-link"
+              ><i class="fa-solid fa-user"></i
+              ><small class="text-muted"> Profil</small></a
+            >
+          </li>
+          {% endif %} {% endif %}
+
+          <li class="nav-item">
+            <a href="{{ path('app_register') }}" class="nav-link"
+              ><small class="text-muted"> Inscription</small></a
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </nav>

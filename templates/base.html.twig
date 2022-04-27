@@ -34,6 +34,30 @@
     </header>
 
     <main class="container-fluid main_container p-0">
+      {% for rubrique, messages in app.flashes %} {# 'app' est une variable twig
+      qui contient toutes les informations stockées en session #} {# 'flashes'
+      stocke des messages à destinztion de l'utilisateur sur toutes les pages de
+      l'applications, on la rempli dans le security controller #}
+
+      <div class="row justify-content-center my-5">
+        <div
+          class="alert alert-{{ rubrique }} alert-dismissible fade show"
+          role="alert"
+        >
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+          {% for message in messages %}
+          <strong>{{ message }}</strong>
+          {% endfor %}
+        </div>
+
+        {% endfor %}
+      </div>
+
       {% block body %} {% endblock %}
     </main>
     {% include '_incs/_footer.html.twig'%} {% block javascripts %}
