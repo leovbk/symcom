@@ -26,7 +26,7 @@ class ProductFixtures extends Fixture
             $category = new Category;
 
             $category->setName($faker->sentence())
-                     ->setSlug($this->slugger->slug(strtoupper($category->getName())));
+                     ->setSlug($this->slugger->slug($category->getName()));
 
             $manager->persist($category);    
             

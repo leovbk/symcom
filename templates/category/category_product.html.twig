@@ -10,7 +10,11 @@
       style="max-width: 20rem;"
     >
       <div class="card-header my-2">
-        <img class="img-fluid mx-auto d-block" src="{{ p.picture }}" alt="" />
+        <img
+          class="img-fluid mx-auto d-block"
+          src="{{ asset('uploads/images/') }}{{ p.picture }}"
+          alt=""
+        />
       </div>
       <div class="card-body">
         <h4 class="card-title">{{ p.title }}</h4>

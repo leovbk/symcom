@@ -4,7 +4,10 @@
 <div class="container">
   <div class="card text-center " style="background-color:#ffffff;">
     <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-      <img src="{{ product.picture }}" class="img-fluid" />
+      <img
+        src="{{ asset('uploads/images/') }}{{ product.picture }}"
+        class="img-fluid"
+      />
       <a href="#!">
         <div
           class="mask"

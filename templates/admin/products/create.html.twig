@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %} {% block title %} {% endblock %} {% block body %}
+
+<div class="container">
+  <h1
+    class="display-4 text-center text-white bg-dark shadow-lg rounded col-7 mx-auto"
+  ></h1>
+
+  <div class="row justify-center">
+    {{ form_start(form, {'attr' : {'class' : 'form-control col-md-5 mx-auto'}})
+    }}
+
+    {{
+      form_row(form.title, {
+        attr: {
+          placeholder: "Saisir un titre",
+          maxlength: false,
+          pattern: false
+        },
+        label: "Nom du produit"
+      })
+    }}
+    {{ form_row(form.content, { attr: { rows: 12 }, label: "Description" }) }}
+    {{ form_row(form.price, { label: "Prix" }) }}
+    {{ form_row(form.picture) }}
+    {% if product.picture %}
+    <small>Image actuelle :</small>
+    <img
+      class="img-fluid"
+      src="{{ asset('uploads/images/') }}{{ product.picture }}"
+    />
+    {% endif %}
+    {{ form_row(form.category) }}
+
+    <div class="container justify-content-center">
+      <button type="submit" class="btn btn-primary ">
+        Appliquer
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+
+{% endblock %}
