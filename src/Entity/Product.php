@@ -66,9 +66,15 @@ class Product
      */
     private $comments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PurchaseDetail::class, mappedBy="product", orphanRemoval=true)
+     */
+    private $purchaseDetails;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->purchaseDetails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,6 +166,36 @@ class Product
             // set the owning side to null (unless already changed)
             if ($comment->getProduct() === $this) {
                 $comment->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PurchaseDetail>
+     */
+    public function getPurchaseDetails(): Collection
+    {
+        return $this->purchaseDetails;
+    }
+
+    public function addPurchaseDetail(PurchaseDetail $purchaseDetail): self
+    {
+        if (!$this->purchaseDetails->contains($purchaseDetail)) {
+            $this->purchaseDetails[] = $purchaseDetail;
+            $purchaseDetail->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchaseDetail(PurchaseDetail $purchaseDetail): self
+    {
+        if ($this->purchaseDetails->removeElement($purchaseDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($purchaseDetail->getProduct() === $this) {
+                $purchaseDetail->setProduct(null);
             }
         }
 

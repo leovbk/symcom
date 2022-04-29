@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %} {% block title %}Hello PurchaseController!{%
+endblock %} {% block body %}
+
+<div class="container col-7 mx-auto">
+  <table class="table table-striped|sm">
+    <thead class="thead-inverse">
+      <tr class="text-center align-middle">
+        <th>N° DE COMMANDE</th>
+        <th>ADRESSE</th>
+        <th>DATE DE COMMANDE</th>
+        <th>ARTICLE</th>
+        <th>TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in commande %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.address }}{{ p.postalCode }}{{ p.city }}</td>
+        <td>{{p.purchaseAt|date('Y/m/d H:i:s')}}</td>
+        <td>
+          {% for item in p.purchasedetails %}
+          <ul>
+            <li class="group-item">
+              {{ item.quantity }} x {{ item.product.title }} :
+              {{ item.total }} €
+            </li>
+          </ul>
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

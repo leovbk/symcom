@@ -3,7 +3,7 @@ namespace App\Cart;
 
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use App\Cart\CartItem;
 
 class CartService 
 {
@@ -98,10 +98,12 @@ class CartService
         continue;
       }
 
-      $panier[] = [
-        'product' => $product,
-        'qte' => $qte,
-      ];
+      // $panier[] = [
+      //   'product' => $product,
+      //   'qte' => $qte,
+      // ];
+
+      $panier[] = new CartItem($product, $qte);
     }
 
     return $panier;

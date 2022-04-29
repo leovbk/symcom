@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Cart\CartService;
+use App\Form\PurchaseType;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,13 +48,16 @@ class CartController extends AbstractController
      public function showCart(CartService $cartService) : response
      {
 
+        $form = $this->createForm(PurchaseType::class);
+
         $panier = $cartService->getDetail();
 
         $total = $cartService->getTotal();
 
         return $this->render('cart/index.html.twig',[
             'panier' => $panier,
-            'total' => $total
+            'total' => $total,
+            'form' => $form->createView()
         ]);
      }
 
