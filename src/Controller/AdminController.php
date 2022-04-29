@@ -8,6 +8,7 @@ use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,14 +23,15 @@ class AdminController extends AbstractController
     public function index(): Response
     {
         return $this->render('admin/index.html.twig', [
+            'controller_name' => 'AdminController',
         ]);
     }
+
 
     /**
      * @Route("/admin/products", name="app_admin_products")
      */
-
-    public function adminProducts(ProductRepository $productRepository): Response
+    public function adminProducts(ProductRepository $productRepository) : Response
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -39,94 +41,173 @@ class AdminController extends AbstractController
         $products = $productRepository->findAll();
 
         return $this->render('admin/products.html.twig', [
-            'colonnes' => $colonnes,
-            'products' => $products
+           'colonnes' => $colonnes,
+           'products' => $products     
         ]);
     }
 
+
     /**
      * @Route("/admin/products/create", name="app_admin_products_create")
-     * @Route("/admin/products/edit/{id}", name="app_admin_products_edit")
+     * 
      */
+    public function adminProductCreate(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger) : Response
+    {
+       
+            $product = new Product();
 
-     public function adminProductCreate(Product $product = null, Request $request, EntityManagerInterface $manager, SluggerInterface $slugger) : Response 
-     {
+            $id = $product->getId();
 
-        if(!$product){
-           $product = new Product();
-        }
+            $form = $this->createForm(ProductType::class, $product);
 
-        $id=$product->getId();
+            $form->handleRequest($request);
 
-        
+          
 
-        $form = $this->createForm(ProductType::class, $product);
+            if($form->isSubmitted() && $form->isValid()) {
 
-        $form->handleRequest($request);
+                //Class Symfony permettant de traiter les fichiers (type file)
+                /** @var UploadedFile $imageFile */
 
-        if($form->isSubmitted() && $form->isValid()) {
+                            //Grace au form, nous pouvons récupérer les données insérer dans le champs 'picture'
+            
+                $imageFile = $form->get('picture')->getData();
 
-            //class symfo qui permet de traiter les fichiers
+                // dump($imageFile->guessExtension()); fonction permettant l'extension d'un fichier
 
-            /** @var UploadedFile $imageFile */
-
-
-            //on recupere toutes les datas de l'image
-
-            $imageFile = $form->get('picture')->getData();
-
-
-            //on récupere le nom de l'image
-
+                //On teste si l'on récupère bien une donnée
             if($imageFile){
+
+                //On stock le nom orignal du fichier (sans l'extension)
                 $originalName = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
 
-                $sluggedFileName = $slugger->slug($originalName);
+              //dump($originalName);
 
-                $newImageName = $sluggedFileName. '-' . uniqid() .'.'. $imageFile->guessExtension();
+              //On attribut un nom plus propre au ficher
+                $sluggedFileName =   $slugger->slug($originalName);
 
-                //on va tenter de copier l'image dans le bon dossier
+                $newImageName = $sluggedFileName . '-' . uniqid() .'.'. $imageFile->guessExtension();
+                // dump($this->getParameter('image_directory'));
 
-                try
-                {
-                    $imageFile->move($this->getParameter('image_directory'), $newImageName);
-                } 
-                catch (FileException $e) 
-                {
-                    echo "Erreur: ". $e->getMessage();
+                //On va tenter de copier l'image dans le bon dossier
+                try{
+
+                    $imageFile->move( $this->getParameter('image_directory'), $newImageName );
+
+                }catch(FileException $e){
+                    return "Erreur: ".  $e->getMessage();
                 }
 
+
                 $product->setPicture($newImageName);
+
             }
+
+           
+
 
             $manager->persist($product);
             $manager->flush();
 
-            $this->addFlash('success', "Le produit: " . $product->getTitle() . " a bien été ajouté");
+            $this->addFlash('success', "Le produit: " . $product->getTitle() . " a bien été ajouté ");
 
-            return $this->redirectToRoute('app_admin_products');
+             return $this->redirectToRoute('app_admin_products');
         }
 
+
         return $this->render('admin/products/create.html.twig', [
-            'form' => $form->createView(),
-            'id' => $id,
-            'product' => $product,
+               'form' => $form->createView(),
+               'id' => $id
         ]);
-     }
+    }
 
-     /**
-      * @Route("/admin/products/delete/{id}", name="app_admin_products_delete")
-      */
+    /**
+    * @Route("/admin/products/edit/{id}", name="app_admin_products_edit")
+    */
+   public function adminProductEdit(Product $product2 ,Request $request, EntityManagerInterface $manager, SluggerInterface $slugger) : Response
+   {
+       
 
-      public function adminDeleteProduct(Product $product, EntityManagerInterface $manager) : Response 
-      {
-        
-        $manager->remove($product);
+        $id = $product2->getId();
 
-        $manager->flush();
 
-        $this->addFlash('danger', "Le produit: " . $product->getTitle() . " a bien été supprimé");
+     
+    
+
+       $form = $this->createForm(ProductType::class, $product2);
+
+       $form->handleRequest($request);
+
+       $imageFile2 = $form->get('picture')->getData();
+                        
+                        
+
+       if($form->isSubmitted()) {
+
+                 /** @var UploadedFile $imageFile2 */
+
+                            //Grace au form, nous pouvons récupérer les données insérer dans le champs 'picture'
+            
+                          
+            
+                            //On teste si l'on récupère bien une donnée
+                        if($imageFile2){
+            
+                            //On stock le nom orignal du fichier (sans l'extension)
+                            $originalName = pathinfo($imageFile2->getClientOriginalName(), PATHINFO_FILENAME);
+            
+                          //dump($originalName);
+            
+                          //On attribut un nom plus propre au ficher
+                            $sluggedFileName2 =   $slugger->slug($originalName);
+            
+                            $newImageName2 = $sluggedFileName2 . '-' . uniqid() .'.'. $imageFile2->guessExtension();
+                            // dump($this->getParameter('image_directory'));
+
+                            try{
+
+                                $imageFile2->move( $this->getParameter('image_directory'), $newImageName2 );
+            
+                            }catch(FileException $e){
+                                return "Erreur: ".  $e->getMessage();
+                            }
+            
+            
+                            $product2->setPicture($newImageName2);
+            
+           }
+
+           $manager->flush();
+
+            $this->addFlash('info', "Le produit: " . $product2->getTitle() . " a bien été modifié ");
+
+           return $this->redirectToRoute('app_admin_products');
+       }
+
+
+       return $this->render('admin/products/edit.html.twig', [
+              'form' => $form->createView(),
+              'id' => $id
+       ]);
+   }
+
+
+   /**
+    * @Route("/admin/products/delete/{id}", name="app_admin_products_delete")
+    */
+    public function AdminDeleteProducts(Product $product, EntityManagerInterface $manager) : Response
+    {       
+            
+
+            $manager->remove($product);
+            $manager->flush();
+
+             $this->addFlash('danger', "Le produit: " . $product->getTitle() . " a bien été supprimé ");
 
         return $this->redirectToRoute('app_admin_products');
-      }
+    }
+
+
+
+
 }

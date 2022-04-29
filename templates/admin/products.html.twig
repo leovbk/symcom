@@ -41,7 +41,11 @@
           ><i class="fa-solid fa-pen-to-square"></i
         ></a>
         <a
+        
+          onclick="return(confirm('Voulez vous vraiment supprimer cet article ?'))"
+          {# possible d'utiliser une modal de confirmation en js ou jquery #}
           class="btn mx-auto justify-content-center btn-danger"
+          href="#"
           href="{{ path('app_admin_products_delete', { id: p.id }) }}"
           ><i class="fa-solid fa-trash"></i
         ></a>
@@ -49,6 +53,6 @@
     </tr>
     {% endfor %}
   </table>
-</diV>
+</div>
+  {% endblock %}
 
-{% endblock %}

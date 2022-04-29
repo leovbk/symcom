@@ -40,6 +40,10 @@
             >
           </li>
           {% else %}
+          <a href="{{ path('app_cart') }}" class="nav-link"
+            ><i class="fa-solid fa-user"></i
+            ><small class="text-muted"> Panier</small></a
+          >
           <li class="nav-item">
             <a href="{{ path('app_logout') }}" class="nav-link"
               ><i class="fa-solid fa-power-off text-danger"></i
@@ -50,6 +54,13 @@
             <a href="#" class="nav-link"
               ><i class="fa-solid fa-user"></i
               ><small class="text-muted"> Profil</small></a
+            >
+          </li>
+          {% endif %} {% if is_granted('ROLE_ADMIN') %}
+          <li class="nav-item">
+            <a href="{{ path('app_admin') }}" class="nav-link"
+              ><i class="fa-solid fa-user"></i
+              ><small class="text-muted">Admin</small></a
             >
           </li>
           {% endif %} {% endif %}

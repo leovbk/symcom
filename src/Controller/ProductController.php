@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use DateTime;
+use App\Entity\Comment;
+use App\Entity\Product;
+use App\Form\CommentType;
+use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\ProductRepository;
-use App\Entity\Product;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProductController extends AbstractController
 {
@@ -34,8 +39,10 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/{id}", name="app_show", requirements={"id" : "\d+"}, methods={"GET", "POST"})
      */
-    public function show(Product $product): Response 
+    public function show(Product $product, Request $request, EntityManagerInterface $manager): Response 
     {
+
+
         /* Tout ça grâce au ParamConverter de Symfony, en gros il voit que l’on a besoin d’un article et aussi 
 d’un ID, il va donc chercher l’article avec l’identifiant et l’envoyer à la fonction show().
 L' @ParamConverterannotation appelle des convertisseurs pour convertir les paramètres de 
@@ -45,8 +52,38 @@ Symfony comprend qu’il y a un article a passé et que dans la route il y a un 
 bon article avec le bon identifiant, cela pourrait très bien marcher avec le titre, le nom etc…
 Nous avons donc des fonctions beaucoup plus courte. */
 
+        $comment = new Comment;
+
+        $formComment = $this->createForm(CommentType::class, $comment);
+
+        $formComment->handleRequest($request);
+
+        $id = $product->getId();
+
+        
+
+        if($formComment->isSubmitted() && $formComment->isValid())
+        {
+            $comment->setCreatedAt(new \DateTime());
+
+            $comment->setProduct($product);
+
+            $manager->persist($comment);
+
+            $manager->flush();
+
+            $this->addFlash('primary', "Votre commentaire a bien été ajouté");
+
+            $this->redirectToRoute('app_show', [
+                'id' => $id
+            ]);
+        }
+
+
+
         return $this->render('/product/show.html.twig', [
             'product' => $product,
+            'formComment' => $formComment->createView(),
         ]);
     }
 

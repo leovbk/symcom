@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use Doctrine\DBAL\Types\StringType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,12 +20,20 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, ['required' => false])
-            ->add('content', TextareaType::class, ['required' => false])
-            ->add('price', MoneyType::class, ['required' => false,])
-            ->add('picture', FileType::class, [
+            ->add('title', TextType::class, [
+                'required' => false
+            ])
+            ->add('content', TextareaType::class, [
+                'required' => false
+            ])
+
+            ->add('price', MoneyType::class, [
+                'required' => false
+            ])
+
+            ->add('picture', FileType::class, array('data_class' => null), [
                 'required' => false,
-                'label' => 'Photo du produit',
+                'label' => "Photo du produit",
                 'mapped' => false,
                 'constraints' => [
                     new File([
@@ -39,16 +48,17 @@ class ProductType extends AbstractType
                         'maxSizeMessage' => "Votre fichier ne doit pas dépasser 5Mo"
                     ])
                 ]
-                ])
+            ])
+
+
             ->add('category', EntityType::class, [
-                'label' => 'Catégorie du produit',
                 'required' => false,
-                'placeholder' => "--- Veuillez choisir une catégorie ---",
+                'placeholder' => "---Veuillez choisir une catégorie---",
                 'class' => Category::class,
                 'choice_label' => function (Category $category) {
                     return strtoupper($category->getName());
                 }
-                ])
+            ])
         ;
     }
 

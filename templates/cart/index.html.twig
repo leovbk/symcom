@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %} {% block title %}Votre panier{% endblock %} {%
+block body %}
+
+<div class="container col-md-10 col-lg-12 col-xs-12">
+  <table class="table table-striped">
+    <thead class="bg-light">
+      <tr class="align-middle text-center">
+        <th>PRODUIT</th>
+        <th>PHOTO</th>
+        <th>PRIX</th>
+        <th>QUANTITE</th>
+        <th>ACTION</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in panier %}
+      <tr class="align-middle text-center">
+        <td>{{ item.product.title }}</td>
+
+        <td>
+          <img
+            class="img-fluid"
+            src="{{ asset('uploads/images/') }}{{ item.product.picture }}"
+          />
+        </td>
+
+        <td>{{ item.product.price }}€</td>
+        <td>
+          <a
+            class="btn btn-success"
+            href="{{ path('app_cart_add', { id: item.product.id }) }}?stay=true"
+            ><i class="fa fa-plus" aria-hidden="true"></i
+          ></a>
+          {{ item.qte
+          }}<a
+            class="btn btn-warning"
+            href="{{
+              path('cart_remove_one', { id: item.product.id })
+            }}?stay=true"
+            ><i class="fa fa-minus" aria-hidden="true"></i
+          ></a>
+        </td>
+        <td>
+          <a
+            class="btn btn-danger"
+            href="{{ path('cart_delete', { id: item.product.id }) }}"
+            ><i class="fa fa-trash" aria-hidden="true"></i
+          ></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h3>Total = {{ total }} €</h3>
+</div>
+
+{% endblock %}

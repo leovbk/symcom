@@ -22,11 +22,45 @@
         {{ product.content }}
       </p>
       <h3 class="text-center">{{ product.price }} €</h3>
-      <button type="button" class="btn btn-primary">
-        <i class="fa-solid fa-basket-shopping"></i> Ajouter au panier
-      </button>
+
+      <a
+        href="{{ path('app_cart_add', { id: product.id }) }}"
+        class="btn btn-success"
+        ><i class="fa-solid fa-basket-shopping"></i>Ajouter au panier</a
+      >
     </div>
+  </div>
+
+  <h4 class="my-5">Donnez votre avis</h4>
+
+  {{ form_start(formComment, {'attr': {'class' : 'col-md-5'}}) }}
+  {{ form_row(formComment.author, { value: "" }) }}
+  {{ form_row(formComment.content, { value: "" }) }}
+  <button type="submit" class="btn btn-primary">Poster</button>
+  {{ form_end(formComment) }}
+</div>
+
+{% if app.user %}
+
+<div class="container">
+  <div class="row bg-light mb-4">
+    {% for comment in product.comments %}
+
+    <div class="col-md-4 py-2">
+      <span
+        ><strong>{{ comment.author }}</strong></span
+      >
+      <small class="font-italic text-muted"
+        >Posté le {{ comment.createdAt|date('d/m/y') }} à
+        {{ comment.createdAt|date('H:i:s') }}</small
+      >
+    </div>
+    <div class="col-md-7 py-2">
+      {{ comment.content | striptags }}
+    </div>
+
+    {% endfor %}
   </div>
 </div>
 
-{% endblock %}
+{% endif %} {% endblock %}
